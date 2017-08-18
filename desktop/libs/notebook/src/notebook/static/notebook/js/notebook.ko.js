@@ -2660,7 +2660,7 @@ var EditorViewModel = (function() {
         self.selectedNotebook().fetchHistory(); // Js error if notebook did not have snippets
       }
     });
-    self.preEditorTogglingSnippet = null;
+    self.preEditorTogglingSnippet = ko.observable();
     self.postEditorTogglingSnippets = {};
     self.toggleEditorMode = function() {
       var _notebook = self.selectedNotebook();
@@ -2668,7 +2668,7 @@ var EditorViewModel = (function() {
 
       if (self.editorType() != 'notebook') {
         self.editorType('notebook');
-        self.preEditorTogglingSnippet = _notebook.snippets()[0];
+        self.preEditorTogglingSnippet(_notebook.snippets()[0]);
         // Split statements
         _notebook.type('notebook');
         _notebook.snippets()[0].statementsList().forEach(function (sql_statement) {
@@ -2685,7 +2685,7 @@ var EditorViewModel = (function() {
       } else {
         self.editorType(options.editor_type);
         // Revert to one statement
-        _newSnippets.push(self.preEditorTogglingSnippet);
+        _newSnippets.push(self.preEditorTogglingSnippet());
         _notebook.type('query-' + options.editor_type);
       }
       _notebook.snippets(_newSnippets);
@@ -2695,7 +2695,6 @@ var EditorViewModel = (function() {
       _notebook.isPresentation(! _notebook.isPresentation());
 
       self.isEditing(! self.isEditing());
-      //self.isFullscreenMode(! self.isFullscreenMode());
       self.isPresentationMode(! self.isPresentationMode());
 
       if (options.editor_type != 'notebook') {
@@ -2714,7 +2713,6 @@ var EditorViewModel = (function() {
 
     self.combinedContent = ko.observable();
     self.isPresentationMode = ko.observable(false);
-    //self.isFullscreenMode = ko.observable(false);
     self.successUrl = ko.observable(options.success_url); // Deprecated
     self.isOptimizerEnabled = ko.observable(options.is_optimizer_enabled);
     self.isNavigatorEnabled = ko.observable(options.is_navigator_enabled);
